@@ -1,0 +1,124 @@
+{% extends "sensores_app/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard Principal{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="container py-5">
+
+    {% if error_msgs %}
+    <div class="alert alert-danger">
+        <strong>Errores:</strong>
+        <ul>
+            {% for error in error_msgs %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <header class="mb-5 text-center">
+        <h1 class="display-4 fw-bold">Dashboard Sensores Ambientales</h1>
+        <p class="lead text-muted">Monitoreo en tiempo real y análisis de datos para el municipio de <strong>Girardota</strong>.</p>
+    </header>
+
+    <!-- Indicadores principales -->
+    <div class="row justify-content-center text-center gy-4 mb-5">
+        <div class="col-md-3">
+            <div class="card shadow border-0 rounded-4 p-4">
+                <div class="mb-3 text-primary">
+                    <i class="bi bi-clipboard-data" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="card-title text-muted">Total de Lecturas</h5>
+                <p class="display-5 fw-bold">{{ total_lecturas }}</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow border-0 rounded-4 p-4">
+                <div class="mb-3 text-danger">
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="card-title text-muted">Anomalías Detectadas</h5>
+                <p class="display-5 fw-bold text-danger">{{ total_anomalias }}</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+    <div class="card shadow border-0 rounded-4 p-4">
+        <div class="mb-3 text-success">
+            <i class="bi bi-hdd-network" style="font-size: 3rem;"></i>
+        </div>
+        <h5 class="card-title text-muted">Cantidad de Sensores</h5>
+        <p class="display-5 fw-bold text-success">13</p>
+    </div>
+</div>
+    </div>
+
+       {{ tabla|safe }}
+
+    <!-- Gráfico principal -->
+    <section>
+        <h3 class="mb-4 text-center">Promedios y Anomalías Mensuales</h3>
+        <canvas id="graficoSensores" width="800" height="400"></canvas>
+    </section>
+
+    <script>
+        const datosGrafica = JSON.parse('{{ datos_grafica|escapejs }}');
+
+        const meses = datosGrafica.map(item => item.mes);
+        const promedioNoAnomalias = datosGrafica.map(item => item.promedio_no_anomalias);
+        const promedioAnomalias = datosGrafica.map(item => item.promedio_anomalias);
+
+        new Chart(document.getElementById('graficoSensores').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: meses,
+                datasets: [
+                    {
+                        label: 'Promedio sin anomalías',
+                        data: promedioNoAnomalias,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: false,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Promedio con anomalías',
+                        data: promedioAnomalias,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: false,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Promedios Mensuales: Sin Anomalías vs Con Anomalías'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Mes' } },
+                    y: { title: { display: true, text: 'Promedio PromedioHora' } }
+                }
+            }
+        });
+    </script>
+
+</div>
+{% endblock %}
