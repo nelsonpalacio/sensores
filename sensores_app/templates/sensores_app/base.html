@@ -27,7 +27,8 @@
             display: flex;
             flex-direction: column;
         }
-        /* Sidebar */
+
+        /* Sidebar escritorio */
         .sidebar {
             position: fixed;
             top: 0;
@@ -63,20 +64,20 @@
         }
 
         /* Topbar */
-        header.topbar {
-  position: fixed;
-  top: 0;
-  left: 220px;
-  width: calc(100% - 220px);
-  height: 56px;
-  background-color: #ecf0f1;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1.5rem;
-  z-index: 1020;
-}
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 220px;
+            width: calc(100% - 220px);
+            height: 56px;
+            background-color: #ecf0f1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            z-index: 1020;
+        }
 
         .topbar .search-input {
             width: 300px;
@@ -102,34 +103,15 @@
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
-                position: fixed;
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                padding: 0.5rem 0;
-            }
-            .sidebar .brand {
-                margin-bottom: 0;
-                padding-left: 1rem;
-                font-size: 1.3rem;
-            }
-            .sidebar nav {
-                display: flex;
-                gap: 0.5rem;
-                padding-left: 1rem;
-                overflow-x: auto;
-            }
-            .sidebar nav a {
-                padding: 0.5rem 1rem;
-                white-space: nowrap;
+                display: none;
             }
             .topbar {
-                margin-left: 0;
                 left: 0;
+                width: 100%;
             }
             main.content {
                 margin-left: 0;
-                margin-top: 112px; /* sidebar + topbar */
+                margin-top: 72px;
                 padding: 1rem;
             }
             footer.footer {
@@ -140,7 +122,8 @@
 </head>
 <body>
 
-    <aside class="sidebar">
+    <!-- Sidebar escritorio -->
+    <aside class="sidebar d-none d-md-flex">
         <div class="brand">🌟 IA Sensores</div>
         <nav>
             <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
@@ -155,30 +138,58 @@
         </nav>
     </aside>
 
-   <header class="topbar d-flex align-items-center justify-content-between px-4" style="height: 56px; position: fixed; top: 0; left: 220px; right: 0; background-color: #ecf0f1; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1020;">
-    <form class="d-flex align-items-center" role="search" onsubmit="return false;">
-        <input class="form-control form-control-sm" type="search" placeholder="Buscar..." aria-label="Buscar" style="width: 280px;" />
-        <button class="btn btn-primary btn-sm ms-2" type="submit">Buscar</button>
-    </form>
-    <div class="user-info d-flex align-items-center gap-3">
-        <span>Usuario 👤</span>
-        <!-- Aquí puedes agregar dropdown, notificaciones, etc. -->
+    <!-- Topbar -->
+    <header class="topbar d-flex align-items-center justify-content-between px-3">
+        <div class="d-flex align-items-center gap-3">
+            <!-- Botón menú móvil -->
+            <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="fw-bold d-none d-md-inline">🌟 IA Sensores</span>
+        </div>
+        <form class="d-flex align-items-center" role="search" onsubmit="return false;">
+            <input class="form-control form-control-sm" type="search" placeholder="Buscar..." aria-label="Buscar" style="width: 280px;" />
+            <button class="btn btn-primary btn-sm ms-2" type="submit">Buscar</button>
+        </form>
+        <div class="user-info d-flex align-items-center gap-3">
+            <span>Usuario 👤</span>
+        </div>
+    </header>
+
+    <!-- Menú móvil -->
+    <div class="offcanvas offcanvas-start text-white bg-dark" tabindex="-1" id="offcanvasMenu">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <h5 class="offcanvas-title fw-bold text-white">🌟 IA Sensores</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
-</header>
+    <div class="offcanvas-body">
+        <nav class="nav flex-column gap-2">
+            <a href="{% url 'home' %}" class="nav-link text-white px-3 py-2 rounded {% if request.path == '/' %}bg-primary{% endif %}">
+                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            </a>
+            <a href="/lecturas/" class="nav-link text-white px-3 py-2 rounded {% if request.path == '/lecturas/' %}bg-primary{% endif %}">
+                <i class="bi bi-bar-chart-line me-2"></i> Lecturas & Anomalías
+            </a>
+            <a href="/predicciones/" class="nav-link text-white px-3 py-2 rounded {% if request.path == '/predicciones/' %}bg-primary{% endif %}">
+                <i class="bi bi-graph-up me-2"></i> Predicciones
+            </a>
+        </nav>
+    </div>
+</div>
 
 
+    <!-- Contenido -->
     <main class="content">
         {% block content %}
-        <!-- Aquí va el contenido dinámico -->
         {% endblock %}
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         &copy; 2025 IA Sensores. Todos los derechos reservados.
     </footer>
 
-    <!-- Bootstrap JS Bundle -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
