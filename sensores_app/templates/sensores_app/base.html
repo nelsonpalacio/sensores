@@ -129,8 +129,10 @@
             <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a href="/lecturas/" class="{% if request.path == '/lecturas/' %}active{% endif %}">
-                <i class="bi bi-bar-chart-line"></i> Lecturas & Anomalías
+            <a href="{% url 'anomalias' %}" class="{% if request.path == '/anomalias/' %}active{% endif %}">
+    <i class="bi bi-bar-chart-line"></i> Lecturas & Anomalías
+</a>
+
             </a>
             <a href="/predicciones/" class="{% if request.path == '/predicciones/' %}active{% endif %}">
                 <i class="bi bi-graph-up"></i> Predicciones
@@ -140,26 +142,31 @@
 
     <!-- Topbar -->
     <header class="topbar d-flex align-items-center justify-content-between px-3">
-        <div class="d-flex align-items-center gap-3">
-            <!-- Botón menú móvil -->
-            <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
-                <i class="bi bi-list"></i>
-            </button>
-            <span class="fw-bold d-none d-md-inline">🌟 IA Sensores</span>
-        </div>
+    <!-- Parte izquierda: botón de menú y formulario de búsqueda -->
+    <div class="d-flex align-items-center gap-3">
+        <!-- Botón menú móvil -->
+        <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Formulario de búsqueda alineado a la izquierda -->
         <form class="d-flex align-items-center" role="search" onsubmit="return false;">
             <input class="form-control form-control-sm" type="search" placeholder="Buscar..." aria-label="Buscar" style="width: 280px;" />
             <button class="btn btn-primary btn-sm ms-2" type="submit">Buscar</button>
         </form>
-        <div class="user-info d-flex align-items-center gap-3">
-            <span>Usuario 👤</span>
-        </div>
-    </header>
+    </div>
+
+    <!-- Parte derecha: usuario -->
+    <div class="user-info d-flex align-items-center gap-3">
+        <span>Usuario 👤</span>
+    </div>
+</header>
+
 
     <!-- Menú móvil -->
     <div class="offcanvas offcanvas-start text-white bg-dark" tabindex="-1" id="offcanvasMenu">
     <div class="offcanvas-header border-bottom border-secondary">
-        <h5 class="offcanvas-title fw-bold text-white">🌟 IA Sensores</h5>
+        
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
@@ -167,7 +174,7 @@
             <a href="{% url 'home' %}" class="nav-link text-white px-3 py-2 rounded {% if request.path == '/' %}bg-primary{% endif %}">
                 <i class="bi bi-speedometer2 me-2"></i> Dashboard
             </a>
-            <a href="/lecturas/" class="nav-link text-white px-3 py-2 rounded {% if request.path == '/lecturas/' %}bg-primary{% endif %}">
+            <a href="{% url 'home' %}" class="nav-link text-white px-3 py-2 rounded {% if request.path == '/lecturas/' %}bg-primary{% endif %}">
                 <i class="bi bi-bar-chart-line me-2"></i> Lecturas & Anomalías
             </a>
             <a href="/predicciones/" class="nav-link text-white px-3 py-2 rounded {% if request.path == '/predicciones/' %}bg-primary{% endif %}">
