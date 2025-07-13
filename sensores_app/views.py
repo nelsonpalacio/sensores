@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import json
 
-RUTA_DATOS = r'D:\personal\tech\IA.Exploradores _sabaneta\Machine Learning\proyecto_sensores\sensores2.csv'
+RUTA_DATOS = r'D:\django_sensores\sensores\sensores_app\sensores2.csv'
 
 def cargar_datos():
     if not os.path.exists(RUTA_DATOS):
