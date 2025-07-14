@@ -19,31 +19,151 @@
         {{ tabla_anomalias|safe }}
     </div>
 </div>
+<canvas id="graficoAnomalias" height="120"></canvas>
 
-<!-- DataTables CSS y JS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        $('#tablaAnomalias').DataTable({
+    const meses = {{ meses_json|safe }};
+    const valores = {{ valores_json|safe }};
+
+    const ctx = document.getElementById('graficoAnomalias').getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(75,192,192,0.8)');
+    gradient.addColorStop(1, 'rgba(75,192,192,0.2)');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Total de Anomalías por Mes',
+                data: valores,
+                backgroundColor: gradient,
+                borderColor: 'rgba(75,192,192,1)',
+                borderWidth: 2,
+                borderRadius: 6,
+                hoverBackgroundColor: 'rgba(75,192,192,0.9)',
+            }]
+        },
+        options: {
             responsive: true,
-            pageLength: 10,
-            lengthMenu: [5, 10, 25, 50],
-            language: {
-                search: "Buscar:",
-                lengthMenu: "Mostrar _MENU_ registros",
-                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                paginate: {
-                    first: "Primero",
-                    last: "Último",
-                    next: "Siguiente",
-                    previous: "Anterior"
+            animation: {
+                duration: 1000,
+                easing: 'easeOutBounce'
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Anomalías por Mes',
+                    font: {
+                        size: 20,
+                        weight: 'bold'
+                    },
+                    color: '#333'
                 },
-                zeroRecords: "No se encontraron registros",
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: '#333',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#aaa',
+                    borderWidth: 1,
+                    padding: 10
+                },
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Cantidad de Anomalías',
+                        color: '#555',
+                        font: { size: 14 }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Mes',
+                        color: '#555',
+                        font: { size: 14 }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
             }
-        });
+        }
     });
 </script>
+<canvas id="graficaPromedios" height="120"></canvas>
+
+<script>
+    try {
+        const ctx = document.getElementById('graficaPromedios').getContext('2d');
+        
+        const meses = JSON.parse('{{ meses_promedios_json|escapejs }}');
+        const datasets = JSON.parse('{{ sensor_datasets_json|escapejs }}');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: meses,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Promedio mensual de las anomalias por sensor',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mes'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Promedio'
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Error al renderizar la gráfica de promedios por sensor:", error);
+    }
+</script>
+
 {% endblock %}
